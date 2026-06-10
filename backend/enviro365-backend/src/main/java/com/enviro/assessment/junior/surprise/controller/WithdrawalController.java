@@ -8,11 +8,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 
 import java.util.List;
 
@@ -55,14 +55,17 @@ public class WithdrawalController {
 
     @Operation(
             summary = "Export withdrawals as CSV",
-            description = "Exports all withdrawal notices as a CSV statement."
+            description = "Exports withdrawal notices as a CSV statement. Can optionally be filtered by investor ID."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "CSV statement exported successfully")
+            @ApiResponse(responseCode = "200", description = "CSV statement exported successfully"),
+            @ApiResponse(responseCode = "404", description = "Investor not found")
     })
     @GetMapping("/export")
-    public ResponseEntity<String> exportWithdrawalsToCsv() {
-        String csvData = withdrawalService.exportWithdrawalsToCsv();
+    public ResponseEntity<String> exportWithdrawalsToCsv(
+            @RequestParam(required = false) Long investorId
+    ) {
+        String csvData = withdrawalService.exportWithdrawalsToCsv(investorId);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=withdrawal-notices.csv")

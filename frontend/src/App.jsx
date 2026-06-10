@@ -90,8 +90,8 @@ function App() {
   };
 
   const downloadCsv = () => {
-    window.open(`${API_URL}/withdrawals/export`, "_blank");
-  };
+  window.open(`${API_URL}/withdrawals/export?investorId=${selectedInvestorId}`, "_blank");
+};
 
   if (!portfolio) {
     return <h2 className="loading">Loading dashboard...</h2>;

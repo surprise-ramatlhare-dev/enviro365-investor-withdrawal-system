@@ -62,6 +62,46 @@ public class WithdrawalService {
                 .toList();
     }
 
+    public String exportWithdrawalsToCsv(Long investorId) {
+        List<WithdrawalNotice> withdrawals;
+
+        if (investorId == null) {
+            withdrawals = withdrawalNoticeRepository.findAll();
+        } else {
+            if (!investorRepository.existsById(investorId)) {
+                throw new InvestorNotFoundException("Investor not found with ID: " + investorId);
+            }
+
+            withdrawals = withdrawalNoticeRepository.findByInvestorId(investorId);
+        }
+
+        StringBuilder csv = new StringBuilder();
+        csv.append("Id,Investor,Product,Amount,Date,Status\n");
+
+        for (WithdrawalNotice withdrawal : withdrawals) {
+            csv.append(withdrawal.getId()).append(",");
+            csv.append(escapeCsv(withdrawal.getInvestor().getFullName())).append(",");
+            csv.append(escapeCsv(withdrawal.getProduct().getProductName())).append(",");
+            csv.append(withdrawal.getWithdrawalAmount()).append(",");
+            csv.append(withdrawal.getWithdrawalDate()).append(",");
+            csv.append(withdrawal.getStatus()).append("\n");
+        }
+
+        return csv.toString();
+    }
+
+    private String escapeCsv(String value) {
+        if (value == null) {
+            return "";
+        }
+
+        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+            return "\"" + value.replace("\"", "\"\"") + "\"";
+        }
+
+        return value;
+    }
+
     private void validateProductBelongsToInvestor(Product product, Investor investor) {
         if (!product.getInvestor().getId().equals(investor.getId())) {
             throw new WithdrawalException("Selected product does not belong to the investor");
@@ -83,25 +123,5 @@ public class WithdrawalService {
         if (withdrawalAmount.compareTo(ninetyPercentOfBalance) > 0) {
             throw new WithdrawalException("Withdrawal amount must not exceed 90% of current balance");
         }
-    }
-
-    public String exportWithdrawalsToCsv() {
-
-        StringBuilder csv = new StringBuilder();
-
-        csv.append("Id,Investor,Product,Amount,Date,Status\n");
-
-        withdrawalNoticeRepository.findAll().forEach(withdrawal -> {
-
-            csv.append(withdrawal.getId()).append(",");
-            csv.append(withdrawal.getInvestor().getFullName()).append(",");
-            csv.append(withdrawal.getProduct().getProductName()).append(",");
-            csv.append(withdrawal.getWithdrawalAmount()).append(",");
-            csv.append(withdrawal.getWithdrawalDate()).append(",");
-            csv.append(withdrawal.getStatus()).append("\n");
-
-        });
-
-        return csv.toString();
     }
 }

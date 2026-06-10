@@ -22,50 +22,72 @@ public class DataLoader implements CommandLineRunner {
             return;
         }
 
-        Investor john = Investor.builder()
-                .fullName("John Smith")
-                .age(70)
-                .email("john.smith@email.com")
+        Investor surprise = Investor.builder()
+                .fullName("Surprise Ramatlhare")
+                .age(67)
+                .email("surprise.ramatlhare@email.com")
                 .build();
 
-        Product johnRetirement = Product.builder()
+        Product surpriseRetirement = Product.builder()
                 .productName("Retirement Annuity")
                 .productType("RETIREMENT")
                 .currentBalance(new BigDecimal("500000.00"))
-                .investor(john)
+                .investor(surprise)
                 .build();
 
-        Product johnSavings = Product.builder()
+        Product surpriseSavings = Product.builder()
                 .productName("Tax Free Savings")
                 .productType("SAVINGS")
                 .currentBalance(new BigDecimal("120000.00"))
-                .investor(john)
+                .investor(surprise)
                 .build();
 
-        john.setProducts(List.of(johnRetirement, johnSavings));
+        surprise.setProducts(List.of(surpriseRetirement, surpriseSavings));
 
-        Investor mary = Investor.builder()
-                .fullName("Mary Johnson")
-                .age(60)
-                .email("mary.johnson@email.com")
+        Investor kabelo = Investor.builder()
+                .fullName("Kabelo Madisha")
+                .age(69)
+                .email("kabelo.madisha@email.com")
                 .build();
 
-        Product maryRetirement = Product.builder()
+        Product kabeloRetirement = Product.builder()
+                .productName("Preservation Fund")
+                .productType("RETIREMENT")
+                .currentBalance(new BigDecimal("750000.00"))
+                .investor(kabelo)
+                .build();
+
+        Product kabeloInvestment = Product.builder()
+                .productName("Balanced Investment Portfolio")
+                .productType("INVESTMENT")
+                .currentBalance(new BigDecimal("250000.00"))
+                .investor(kabelo)
+                .build();
+
+        kabelo.setProducts(List.of(kabeloRetirement, kabeloInvestment));
+
+        Investor thato = Investor.builder()
+                .fullName("Thato Singo")
+                .age(45)
+                .email("thato.singo@email.com")
+                .build();
+
+        Product thatoRetirement = Product.builder()
                 .productName("Retirement Fund")
                 .productType("RETIREMENT")
                 .currentBalance(new BigDecimal("300000.00"))
-                .investor(mary)
+                .investor(thato)
                 .build();
 
-        Product maryInvestment = Product.builder()
+        Product thatoSavings = Product.builder()
                 .productName("Unit Trust")
                 .productType("INVESTMENT")
                 .currentBalance(new BigDecimal("90000.00"))
-                .investor(mary)
+                .investor(thato)
                 .build();
 
-        mary.setProducts(List.of(maryRetirement, maryInvestment));
+        thato.setProducts(List.of(thatoRetirement, thatoSavings));
 
-        investorRepository.saveAll(List.of(john, mary));
+        investorRepository.saveAll(List.of(surprise, kabelo, thato));
     }
 }
